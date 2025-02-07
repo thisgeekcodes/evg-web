@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { FaBars, FaTimes, FaDiscord, FaTwitter } from "react-icons/fa";
+import { FaBars, FaTimes, FaDiscord } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { TiArrowSortedDown } from "react-icons/ti";
 import { useSession, signIn, signOut } from "next-auth/react";
 
@@ -10,6 +11,7 @@ export default function Header({ menuOpen, setMenuOpen }) {
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [evgDropdownOpen, setEvgDropdownOpen] = useState(false);
+  const [teamsDropdownOpen, setTeamsDropdownOpen] = useState(false); // For mobile Teams dropdown
   const [isMember, setIsMember] = useState(false); // Track if user has "EVG" role
 
   // Fetch user roles from the API when session is available
@@ -46,7 +48,7 @@ export default function Header({ menuOpen, setMenuOpen }) {
           {/* Social Icons (Left) */}
           <div className="flex items-center space-x-4">
             <a
-              href="https://discord.com"
+              href="https://discord.gg/qcfuG8rgxy"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-80 transition-opacity"
@@ -54,12 +56,12 @@ export default function Header({ menuOpen, setMenuOpen }) {
               <FaDiscord className="w-6 h-6" />
             </a>
             <a
-              href="https://twitter.com"
+              href="https://x.com/EtherealVoidGG/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-80 transition-opacity"
             >
-              <FaTwitter className="w-6 h-6" />
+              <FaXTwitter className="w-6 h-6" />
             </a>
           </div>
 
@@ -89,7 +91,7 @@ export default function Header({ menuOpen, setMenuOpen }) {
                   onClick={() => signIn("discord")}
                   className="bg-blue-500 hover:bg-blue-600 px-4 py-1 rounded-md text-white transition-colors"
                 >
-                  Login with Discord
+                  Login
                 </button>
               </>
             )}
@@ -119,19 +121,36 @@ export default function Header({ menuOpen, setMenuOpen }) {
                 Shop
               </Link>
             </li>
-            <li>
-              <Link
-                href="/teams"
-                className="hover:text-gray-300 transition-colors"
-              >
-                Teams
-              </Link>
+            {/* Teams Dropdown */}
+            <li className="relative group">
+              <button className="hover:text-gray-300 transition-colors focus:outline-none flex items-center space-x-1">
+                <span>Teams</span> <TiArrowSortedDown />
+              </button>
+              <ul className="absolute left-0 hidden group-hover:block bg-black border border-gray-700 -mt-1 py-2 w-40">
+                <li>
+                  <Link
+                    href="/teams/apex-legends"
+                    className="block px-4 py-2 hover:bg-gray-700 transition-colors"
+                  >
+                    Apex Legends
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/teams/honor-of-kings"
+                    className="block px-4 py-2 hover:bg-gray-700 transition-colors"
+                  >
+                    Honor Of Kings
+                  </Link>
+                </li>
+              </ul>
             </li>
+            {/* EVG Dropdown */}
             <li className="relative group">
               <button className="hover:text-gray-300 transition-colors focus:outline-none flex items-center space-x-1">
                 <span>EVG</span> <TiArrowSortedDown />
               </button>
-              <ul className="absolute left-0 hidden group-hover:block bg-black border border-gray-700 mt-2 py-2 w-40">
+              <ul className="absolute left-0 hidden group-hover:block bg-black border border-gray-700 -mt-1 py-2 w-40">
                 <li>
                   <Link
                     href="/evg/about"
@@ -240,15 +259,44 @@ export default function Header({ menuOpen, setMenuOpen }) {
                   Shop
                 </Link>
               </li>
+              {/* Mobile Teams Dropdown */}
               <li>
-                <Link
-                  href="/teams"
-                  className="block px-6 py-2 hover:bg-gray-700 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
+                <button
+                  onClick={() => setTeamsDropdownOpen(!teamsDropdownOpen)}
+                  className="w-full text-left px-6 py-2 hover:bg-gray-700 transition-colors flex items-center space-x-1"
                 >
-                  Teams
-                </Link>
+                  <span>Teams</span> <TiArrowSortedDown />
+                </button>
+                {teamsDropdownOpen && (
+                  <ul className="pl-6">
+                    <li>
+                      <Link
+                        href="/teams/apex-legends"
+                        className="block px-4 py-2 hover:bg-gray-700 transition-colors"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setTeamsDropdownOpen(false);
+                        }}
+                      >
+                        Apex Legends
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/teams/honor-of-kings"
+                        className="block px-4 py-2 hover:bg-gray-700 transition-colors"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setTeamsDropdownOpen(false);
+                        }}
+                      >
+                        Honor Of Kings
+                      </Link>
+                    </li>
+                  </ul>
+                )}
               </li>
+              {/* Mobile EVG Dropdown */}
               <li>
                 <button
                   onClick={() => setEvgDropdownOpen(!evgDropdownOpen)}
